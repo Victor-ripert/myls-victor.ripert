@@ -1,0 +1,6 @@
+main.c
+*~
+*.gcda
+*.gcno
+./unit_tests
+./bin_my_printf
