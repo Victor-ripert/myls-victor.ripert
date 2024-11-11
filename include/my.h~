@@ -1,0 +1,15 @@
+/*
+** EPITECH PROJECT, 2024
+** flags.h
+** File description:
+** flags structure & functions for my_printf
+*/
+#include <dirent.h>
+#ifndef FILE_H
+    #define FILE_H
+int my_ls(int argc, char *argv);
+typedef struct {
+    char flag;
+    int (*ptr_f)(struct dirent);
+} ls_flag_t;
+#endif /* FILE_H */
