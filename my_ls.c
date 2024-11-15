@@ -9,19 +9,19 @@
 #include <stdio.h>
 #include <sys/stat.h>
 #include <stdlib.h>
+#include <stdbool.h>
+#include "my.h"
 
-void array_add(char **array)
+int flag_tri(char *str)
 {
-    int i = 0;
-    char **array_cpy;
-
-    while (array[i] != NULL) {
-	i++;
+    for (int i = 0; flags_tab[i].flag != '.'; i++) {
+	for (int n = 1; str[n] != '\0'; n++) {
+	    if (str[n] == flags_tab[i].flag) {
+		flags_tab[i].present = true;
+	    }
+	}
     }
-    array_cpy = malloc(sizeof(char) + (sizeof(char) * i));
-    for (int n = 0; n != i; n++) {
-	array_cpy[n] = array[n];
-    }
+    return 0;
 }
 
 int my_ls(int argc, char **argv)
@@ -29,27 +29,30 @@ int my_ls(int argc, char **argv)
     DIR *dirp;
     struct dirent *dp;
     struct stat sb;
-    char *flags[0];
-    char *files[0];
-    int n = 0;
-    int z = 0;
+    node_t files = malloc(sizeof(node_t));
+    //node_t files_open = malloc(node_size);
+    int count = 0;
 
     if (argc == 1) {
-	files[0] = ".";
+	files->str = ".";
+	files->next = NULL;
     } else {
 	for (int i = 1; i != argc; i++) {
 	    if (argv[i][0] == '-') {
-		array_add(flags);
-		flags[n] = argv[i];
-		n++;
+		flag_tri(argv[i]);
 	    } else {
-		array_add(files);
-		files[z] = argv[i];
-		z ++;
+		add_node(files, argv[i]);
+		count ++;
 	    }
 	}
     }
-    //printf("%s\n", files[0]);
+    if (count == 0) {
+	files->str = ".";
+	files->next = NULL;
+    }
+    files_loop(files, flags_tab);
+    //open_files(files);
+    //print_node(files_open);
 /*
     dirp = opendir(".");
     for (dp = readdir(dirp); dp != NULL;dp = readdir(dirp)) {
