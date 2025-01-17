@@ -10,58 +10,42 @@
 #include <sys/stat.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include "my.h"
+#include "my_ls.h"
 
-int flag_tri(char *str)
+
+param_t *init_param(void)
 {
-    for (int i = 0; flags_tab[i].flag != '.'; i++) {
-	for (int n = 1; str[n] != '\0'; n++) {
-	    if (str[n] == flags_tab[i].flag) {
-		flags_tab[i].present = true;
-	    }
-	}
-    }
-    return 0;
+    param_t *params = malloc(sizeof(param_t) * 6);
+
+    params[0].flag = 'a';
+    params[0].present = 0;
+    params[1].flag = 'l';
+    params[1].present = 0;
+    params[2].flag = 'R';
+    params[2].present = 0;
+    params[3].flag = 'd';
+    params[3].present = 0;
+    params[4].flag = 'r';
+    params[4].present = 0;
+    params[5].flag = 't';
+    params[5].present = 0;
+    return params;
 }
 
 int my_ls(int argc, char **argv)
 {
-    DIR *dirp;
-    struct dirent *dp;
-    struct stat sb;
-    node_t files = malloc(sizeof(node_t));
-    //node_t files_open = malloc(node_size);
-    int count = 0;
+    lk_list_t *list = NULL;
+    int rev = 0;
+    param_t *params = init_param();
 
-    if (argc == 1) {
-	files->str = ".";
-	files->next = NULL;
+    ls_flags(argc, argv, &params);
+    files_to_list(argc, argv, &list, params);
+    rev = params[4].present;
+    select_sort(&list, rev);
+    if (params[1].present == 1) {
+        get_info(&list, params);
+        display_list_l(list);
     } else {
-	for (int i = 1; i != argc; i++) {
-	    if (argv[i][0] == '-') {
-		flag_tri(argv[i]);
-	    } else {
-		add_node(files, argv[i]);
-		count ++;
-	    }
-	}
+        display_list(list);
     }
-    if (count == 0) {
-	files->str = ".";
-	files->next = NULL;
-    }
-    files_loop(files, flags_tab);
-    //open_files(files);
-    //print_node(files_open);
-/*
-    dirp = opendir(".");
-    for (dp = readdir(dirp); dp != NULL;dp = readdir(dirp)) {
-	printf("%s : ", dp->d_name);
-	lstat(dp->d_name, &sb);
-	printf("%ld, ", sb.st_size);
-	printf("\n");
-    }
-    closedir(dirp);
-*/
-    return 0;
 }
