@@ -15,7 +15,6 @@ SRC =	main.c	\
 	linked_list/select_sort.c	\
 	linked_list/swap_in_list.c	 \
 	linked_list/create_node.c	\
-	display_args.c\
 	get_info.c	\
 	str/my_strcmp.c	\
 	str/my_str_dup.c	\
